@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build Baremetal_Project",
+            "command": "make all",
+            "options": {
+                "cwd": "${workspaceFolder}/Debug"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        },
+
+        {
+            "type": "shell",
+            "label": "Clean Baremetal_Project",
+            "command": "make clean",
+            "options": {
+                "cwd": "${workspaceFolder}/Debug"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+        },
+    ],    
+}
+
+

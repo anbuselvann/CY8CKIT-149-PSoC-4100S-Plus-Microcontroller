@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Dice</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;700&family=Google+Sans:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Google Sans', 'Segoe UI', Arial, sans-serif;
+    background: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    width: 100%;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  header .logo {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .logo span:nth-child(1) { color: #4285F4; }
+  .logo span:nth-child(2) { color: #4285F4; }
+  .logo span:nth-child(3) { color: #4285F4; }
+  .logo span:nth-child(4) { color: #4285F4; }
+  .logo span:nth-child(5) { color: #4285F4; }
+  .logo span:nth-child(6) { color: #4285F4; }
+  .logo span:nth-child(7) { color: #4285F4; }
+  .logo span:nth-child(8) { color: #4285F4; }
+  .logo span:nth-child(9) { color: #4285F4; }
+  .logo span:nth-child(10) { color: #4285F4; }
+  .logo span:nth-child(11) { color: #4285F4; }
+
+  .status-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+    margin-left: auto;
+    transition: background 0.4s;
+  }
+  .status-dot.live { background: #34A853; box-shadow: 0 0 0 3px rgba(52,168,83,0.2); }
+  .status-dot.error { background: #EA4335; }
+
+  main {
+    width: 100%;
+    max-width: 520px;
+    padding: 48px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .card {
+    width: 100%;
+    background: #fff;
+    border-radius: 24px;
+    padding: 36px 32px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  .card-label {
+    font-size: 13px;
+    color: #80868b;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 16px;
+  }
+
+  .dice-display {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+  }
+
+  .dice-face {
+    width: 120px;
+    height: 120px;
+    border-radius: 22px;
+    background: #fff;
+    border: 3px solid #e8eaed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .dice-face.rolled {
+    border-color: #4285F4;
+    box-shadow: 0 0 0 4px rgba(66,133,244,0.12);
+  }
+
+  .dice-number {
+    font-size: 56px;
+    font-weight: 700;
+    color: #202124;
+    line-height: 1;
+    transition: all 0.3s ease;
+  }
+
+  .dice-number.empty { color: #bdc1c6; font-size: 36px; }
+
+  .roll-time {
+    font-size: 13px;
+    color: #80868b;
+    min-height: 20px;
+  }
+
+  .waiting-text {
+    font-size: 15px;
+    color: #5f6368;
+    margin-top: 4px;
+  }
+
+  .pulse {
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .dice-number.animate { animation: pop 0.35s ease-out; }
+
+  /* Dot pattern for dice face */
+  .dots {
+    display: grid;
+    width: 80px;
+    height: 80px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #202124;
+  }
+
+  .dot.hidden { background: transparent; }
+
+  footer {
+    margin-top: auto;
+    padding: 20px;
+    font-size: 12px;
+    color: #80868b;
+    text-align: center;
+  }
+  footer a { color: #4285F4; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span>D</span><span>i</span><span>g</span><span>i</span><span>t</span><span>a</span><span>l</span>
+    &nbsp;
+    <span>D</span><span>i</span><span>c</span><span>e</span>
+  </div>
+  <div class="status-dot" id="statusDot" title="Connection status"></div>
+</header>
+
+<main>
+  <div class="card">
+    <div class="card-label">Latest Roll</div>
+
+    <div class="dice-display">
+      <div class="dice-face" id="diceFace">
+        <span class="dice-number empty" id="diceNumber">—</span>
+      </div>
+    </div>
+
+    <div class="roll-time" id="rollTime">
+      <span class="waiting-text pulse" id="waitingText">Waiting for a roll...</span>
+    </div>
+  </div>
+</main>
+
+<footer>
+  PSoC &rarr; UART &rarr; ESP8266 &rarr; Wi-Fi
+</footer>
+
+<script>
+  let lastRoll = 0;
+
+  const dot = document.getElementById('statusDot');
+  const face = document.getElementById('diceFace');
+  const num  = document.getElementById('diceNumber');
+  const timeEl = document.getElementById('rollTime');
+  const waitEl = document.getElementById('waitingText');
+
+  function formatTime(d) {
+    const h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+    const pad = n => String(n).padStart(2,'0');
+    return `Rolled at ${pad(h)}:${pad(m)}:${pad(s)}`;
+  }
+
+  function showRoll(value) {
+    num.className = 'dice-number';
+    num.textContent = value;
+
+    face.classList.add('rolled');
+    void num.offsetWidth;
+    num.classList.add('animate');
+
+    if (waitEl) waitEl.remove();
+    timeEl.textContent = formatTime(new Date());
+  }
+
+  // 🔥 CHANGE HERE: WebSocket instead of fetch
+  const ws = new WebSocket("ws://10.90.177.44:81/");
+
+  ws.onopen = () => {
+    dot.classList.remove('error');
+    dot.classList.add('live');
+  };
+
+  ws.onmessage = (event) => {
+    const value = parseInt(event.data);
+
+    if (value >= 1 && value <= 6 && value !== lastRoll) {
+      lastRoll = value;
+      showRoll(value);
+    }
+  };
+
+  ws.onerror = () => {
+    dot.classList.remove('live');
+    dot.classList.add('error');
+  };
+</script>
+
+</body>
+</html>

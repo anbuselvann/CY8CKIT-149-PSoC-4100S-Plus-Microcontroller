@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"stdio.h": "c",
+			"hello.h": "c",
+			"stat.h": "c",
+			"gpio.h": "c",
+			"reset.h": "c",
+			"stdint.h": "c"
+		}
+	}
+}

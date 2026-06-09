@@ -1,0 +1,18 @@
+{
+    "OpenOCD_path":"D:/Infineon board/Infineon/Tools/openocd",
+    "APPLICATION_NAME":  "BareMetal",
+    "local_gdbPath": "D:/Infineon board/bin/arm-none-eabi-gdb.exe", 
+
+    "project_elf_path": "./Debug/bin/${config:APPLICATION_NAME}.elf",
+    "openocd_scripts": "${config:OpenOCD_path}/scripts/",
+    "openocd_interface" : "${config:OpenOCD_path}/scripts/interface/kitprog3.cfg",
+    "openocd_target" :"${config:OpenOCD_path}/scripts/target/psoc4.cfg",
+    "svd_path": "${workspaceRoot}/.vscode/psoc4100sp.svd",
+    "project_hex_path" : "./Debug/bin/${config:APPLICATION_NAME}.hex",
+    "cortex-debug.variableUseNaturalFormat": true,
+    "files.associations": {
+        "reset.h": "c",
+        "gpio.h": "c",
+        "cmsis_gcc.h": "c"
+    },
+}
